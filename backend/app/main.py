@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from fastapi.responses import JSONResponse
 from . import models, schemas, crud, websocket, database
 
 app = FastAPI()
@@ -32,7 +33,7 @@ manager = websocket.ConnectionManager()
 @app.get("/api/poll", response_model=schemas.PollBase)
 def get_poll(db: Session = Depends(get_db)):
     poll = crud.get_poll_with_options(db, 1)
-    return poll
+    return JSONResponse(content=schemas.PollBase.model_validate(poll).model_dump(), media_type="application/json; charset=utf-8")
 
 @app.post("/api/poll/vote")
 async def vote(vote: schemas.VoteRequest, db: Session = Depends(get_db)):
