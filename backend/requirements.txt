@@ -3,4 +3,5 @@ uvicorn
 sqlalchemy
 pymysql
 aiomysql
-python-dotenv 
+python-dotenv
+cryptography 
