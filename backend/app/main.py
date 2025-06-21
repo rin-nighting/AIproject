@@ -64,4 +64,16 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             await websocket.receive_text()  # 保持连接
     except WebSocketDisconnect:
-        manager.disconnect(websocket) 
+        manager.disconnect(websocket)
+
+@app.websocket("/ws/test")
+async def websocket_test(websocket: WebSocket):
+    """简单的 WebSocket 测试端点"""
+    await websocket.accept()
+    try:
+        await websocket.send_text("WebSocket 连接成功！")
+        while True:
+            data = await websocket.receive_text()
+            await websocket.send_text(f"收到消息: {data}")
+    except WebSocketDisconnect:
+        print("WebSocket 测试连接断开") 

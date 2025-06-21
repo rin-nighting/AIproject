@@ -55,9 +55,8 @@ const submitVote = async () => {
 
 onMounted(() => {
   fetchPoll()
-  // WebSocket 实时更新 - 使用相对路径通过 nginx 代理
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-  const ws = new WebSocket(`${protocol}//${window.location.host}/ws/poll`)
+  // WebSocket 实时更新 - 使用相对路径
+  const ws = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/ws/poll`)
   
   ws.onopen = () => {
     console.log('WebSocket 连接已建立')
