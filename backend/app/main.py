@@ -30,6 +30,14 @@ def get_db():
 
 manager = websocket.ConnectionManager()
 
+@app.get("/api/test")
+def test_chinese():
+    """测试中文编码的接口"""
+    return JSONResponse(
+        content={"message": "你好世界", "test": "中文测试"},
+        media_type="application/json; charset=utf-8"
+    )
+
 @app.get("/api/poll", response_model=schemas.PollBase)
 def get_poll(db: Session = Depends(get_db)):
     poll = crud.get_poll_with_options(db, 1)
