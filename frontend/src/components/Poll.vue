@@ -55,13 +55,27 @@ const submitVote = async () => {
 
 onMounted(() => {
   fetchPoll()
-  // WebSocket 实时更新
-  const ws = new WebSocket(`ws://${location.host}/ws/poll`)
+  // WebSocket 实时更新 - 使用相对路径通过 nginx 代理
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+  const ws = new WebSocket(`${protocol}//${window.location.host}/ws/poll`)
+  
+  ws.onopen = () => {
+    console.log('WebSocket 连接已建立')
+  }
+  
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data)
     if (poll.value && data.poll_id === poll.value.id) {
       poll.value.options = data.options
     }
+  }
+  
+  ws.onerror = (error) => {
+    console.error('WebSocket 连接错误:', error)
+  }
+  
+  ws.onclose = () => {
+    console.log('WebSocket 连接已关闭')
   }
 })
 </script>
